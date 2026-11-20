@@ -1,0 +1,7 @@
+word_explorer.db
+word_explorer.db-shm
+word_explorer.db-wal
+yolov8n.pt
+__pycache__/
+*.py[cod]
+.streamlit/secrets.toml
