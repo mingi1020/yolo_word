@@ -1,7 +1,7 @@
 # Snap! Word Explorer
 
 A Streamlit app for children to photograph objects and learn their Korean or English names. It uses YOLOv8n's 80 COCO object classes and provides language-specific audio.
-Users can create a username and password, add friends, and start automatic photo battles in beach or forest arenas. Fighters alternate attacks until one runs out of health. Account data and photos are stored in a local SQLite database; passwords are stored as salted hashes.
+Users can create a username and password, add friends, and start automatic photo battles in beach or forest arenas. Each player chooses a word from their word book when starting or accepting a battle; the latest photo for that word is used. Fighters alternate attacks until one runs out of health. Account data and photos are stored in a local SQLite database; passwords are stored as salted hashes.
 
 ## Project structure
 

@@ -872,6 +872,14 @@ elif section == "battles":
             else "Add a friend before starting a photo battle."
         )
     else:
+        battle_photos_by_word = {}
+        for photo in my_photos:
+            battle_photos_by_word.setdefault(photo["class_name"], photo)
+        battle_words = list(battle_photos_by_word)
+
+        def battle_word_label(word):
+            return KOREAN_WORDS.get(word, "사물") if language == "ko" else word
+
         selected_scene = st.radio(
             "전투 장소" if language == "ko" else "Battle arena",
             options=("beach", "forest"),
@@ -882,6 +890,14 @@ elif section == "battles":
                 else "🌲 FOREST"
             ),
             horizontal=True,
+        )
+        selected_word = st.selectbox(
+            "대전에 사용할 단어"
+            if language == "ko"
+            else "Choose your battle word",
+            battle_words,
+            format_func=battle_word_label,
+            key="challenger_battle_word",
         )
         friend_options = {
             f'@{friend["username"]}': friend["id"] for friend in friend_list
@@ -898,7 +914,7 @@ elif section == "battles":
             create_battle(
                 friend_options[selected_friend_name],
                 user_id,
-                my_photos[0]["id"],
+                battle_photos_by_word[selected_word]["id"],
                 selected_scene,
             )
             st.success(
@@ -923,11 +939,23 @@ elif section == "battles":
                     f'@{battle["challenger"]} · {scene_name} '
                     + ("도전!" if language == "ko" else "challenged you!")
                 )
+                selected_word = st.selectbox(
+                    "대전에 사용할 내 단어"
+                    if language == "ko"
+                    else "Choose your battle word",
+                    battle_words,
+                    format_func=battle_word_label,
+                    key=f'accept_battle_word_{battle["id"]}',
+                )
                 if right.button(
                     "수락하고 대전" if language == "ko" else "Accept & fight",
                     key=f'accept_battle_{battle["id"]}',
                 ):
-                    accept_battle(battle["id"], user_id, my_photos[0]["id"])
+                    accept_battle(
+                        battle["id"],
+                        user_id,
+                        battle_photos_by_word[selected_word]["id"],
+                    )
                     st.rerun()
         else:
             st.info(
