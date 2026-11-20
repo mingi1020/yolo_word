@@ -1,43 +1,48 @@
-# Snap! Word Explorer
+# 📸 찍으면서 배우는 우리 아이 첫 단어장 (Snap & Learn)
 
-A Streamlit app for children to photograph objects and learn their Korean or English names. It uses YOLOv8n's 80 COCO object classes and provides language-specific audio.
-Users can create a username and password, add friends, and start automatic photo battles in beach or forest arenas. Each player chooses a word from their word book when starting or accepting a battle; the latest photo for that word is used. Fighters alternate attacks until one runs out of health. Account data and photos are stored in a local SQLite database; passwords are stored as salted hashes.
+> **"놀이처럼 즐기는 영유아·어린이 맞춤형 사물 인식 단어 학습 서비스"**
 
-## Project structure
+---
 
-```text
-.
-├── app.py
-├── arena.py
-├── local_store.py
-├── .gitignore
-├── requirements.txt
-└── README.md
-```
+## 💡 주제 및 만든 이유 (기획 배경)
 
-The `yolov8n.pt` weights are downloaded automatically by Ultralytics on first use and cached by Streamlit for the running app.
+### 해결하고자 했던 문제
+* **지루한 단어 학습:** 기존의 책이나 플래시카드를 통한 단어 공부는 아이들에게 쉽게 지루함을 유발하여 집중력이 떨어지는 모습을 자주 볼 수 있었습니다.
+* **아이들의 행동 특성 활용:** 아이들은 호기심이 많고, 특히 스마트폰이나 카메라로 주변 사물을 직접 찍고 탐색하는 놀이를 무척 좋아합니다.
 
-## Run locally
+### 기획 의도
+**"아이가 좋아하는 행동(사진 찍기)을 그대로 학습으로 연결할 수는 없을까?"**라는 고민에서 출발했습니다. 
+아이가 직접 카메라로 주변 사물을 비추거나 촬영하면, AI가 사물을 인식해 화면에 단어를 띄워주고 음성으로 읽어줍니다. 놀이를 하듯 자연스럽게 사물의 이름과 발음을 익힐 수 있도록 기획했습니다.
 
-Use Python 3.11, then install dependencies and start Streamlit:
+---
 
-```bash
-python -m pip install -r requirements.txt
-streamlit run app.py
-```
+## 🛠 사용 모델 및 라이브러리
 
-Allow camera access when prompted. Browser speech audio is generated through gTTS, so an internet connection is needed when the audio is first generated.
+* **Object Detection (객체 인식):** `YOLO (You Only Look Once)`
+  * 실시간으로 카메라에 비친 사물을 빠르고 정확하게 탐지하기 위해 사용했습니다.
+* **TTS (Text-to-Speech):** `gTTS (Google Text-to-Speech)`
+  * 인식된 사물의 단어를 아이들이 따라 읽기 쉽도록 자연스러운 음성으로 변환하여 들려주기 위해 사용했습니다.
+* **기타 환경:** `Python`, `OpenCV` *(※ 실제 사용하신 프레임워크나 UI 라이브러리가 있다면 추가해 주세요)*
 
-On first run, the app creates `word_explorer.db` automatically. Users on the same running app can create accounts, search for usernames, accept friend requests, and battle using their newest detected photos. The database file contains account and photo data, is excluded from Git, and should be backed up if it must be preserved.
+---
 
-## Deploy to Streamlit Community Cloud
+## 🖥 실행 화면 캡처
 
-1. Push `app.py`, `local_store.py`, `requirements.txt`, and `README.md` to the root of a GitHub repository.
-2. Sign in at [share.streamlit.io](https://share.streamlit.io/) and choose **Create app**.
-3. Select the repository, branch, and `app.py` as the main file.
-4. Choose Python 3.11 in the advanced settings, then deploy.
-5. Open the deployed app on a phone or tablet, grant camera access, and take a photo. The first object detection downloads `yolov8n.pt`; allow time for that initial load.
+> *아래 이미지 경로를 실제 캡처하신 이미지 파일 경로로 수정해 주세요.*
 
-The SQLite database is local to the app server. Community Cloud files may be reset when the app restarts, so this simple setup does not provide durable cloud storage. Visitors to the public app can create accounts and upload photos; do not use important accounts or personal photos. No server-side camera device or speaker is used. The camera is accessed by the browser through Streamlit, and audio is played in the browser.
+| 사물 인식 및 단어 표시 화면 | 음성 출력 및 학습 진행 화면 |
+| :---: | :---: |
+| ![실행 화면 1](./images/screenshot1.png) | ![실행 화면 2](./images/screenshot2.png) |
+| *카메라로 사물을 비췄을 때 YOLO가 객체를 탐지한 모습* | *인식된 단어 텍스트와 gTTS 음성이 재생되는 모습* |
 
-The local database, downloaded model weights, Python caches, and Streamlit secrets are excluded from Git. The model weights are downloaded automatically by Ultralytics when the app first runs.
+---
+
+## 🔥 어려웠던 점과 해결 방법 (회고)
+
+### 1. 초기 기획의 막막함과 빠른 진척
+* **어려웠던 점:** 처음 프로젝트를 시작할 때, 어떤 주제를 선정하고 구체화할지 **기획 단계가 가장 힘들었습니다.** 하지만 막상 방향을 잡고 개발에 들어가니 예상했던 초기 기획 기능을 생각보다 훨씬 빠르게 구현해 버려, 이후 방향성을 어떻게 확장할지 고민이 되었습니다.
+* **해결 방법:** 고민만 하기보다 일단 부딪혀보며 프로토타입을 빠르게 완성했고, 실제 동작하는 결과물을 보면서 필요한 기능들을 하나씩 살을 붙여 나갔습니다.
+
+### 2. 영유아 눈높이에 맞는 UI 선정
+* **어려웠던 점:** 주 사용자가 어린아이들이다 보니, 기존 서비스들처럼 복잡한 텍스트나 버튼이 많은 UI는 적합하지 않았습니다. 직관적이면서도 아이들의 흥미를 끌 수 있는 UI를 선정하고 배치하는 과정이 까다로웠습니다.
+* **해결 방법:** 완벽한 디자인을 한 번에 찾으려 하기보다, 여러 레퍼런스를 참고해 직접 화면을 구성해 보고 수정하는 과정을 반복했습니다. **"일단 해보자"는 마음으로 꾸준히 구현하다 보니 자연스럽게 최적의 UI와 완성도 있는 결과물을 만들어낼 수 있었습니다.**
